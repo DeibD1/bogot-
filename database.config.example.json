@@ -1,0 +1,16 @@
+{
+  "_comentario": "Copia este archivo como 'database.config.json'. 'url' activa el modo MULTIUSUARIO (PostgreSQL de la empresa); sin 'url' la app trabaja en modo local. 'smtp' activa el código de verificación por correo (2FA) y los correos de soporte; con Microsoft 365 usar smtp.office365.com:587 y un buzón autorizado para SMTP. 'seguridad' y 'soporteEmail' (destinatario de los reportes de soporte; si falta, van a los líderes de la unidad) son opcionales.",
+  "url": "postgres://usuario:contraseña@servidor.empresa.local:5432/gestor_ofertas",
+  "smtp": {
+    "host": "smtp.office365.com",
+    "port": 587,
+    "user": "notificaciones@empresa.co",
+    "pass": "CONTRASEÑA-O-CLAVE-DE-APLICACION",
+    "from": "Gestor de Ofertas <notificaciones@empresa.co>"
+  },
+  "seguridad": {
+    "inactividadMinutos": 15,
+    "requiere2fa": true
+  },
+  "soporteEmail": "administrador@empresa.co"
+}
