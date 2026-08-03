@@ -2,8 +2,8 @@ import { mkdirSync } from 'node:fs'
 import { Pool } from 'pg'
 import { drizzle as drizzlePg } from 'drizzle-orm/node-postgres'
 import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core'
-import { schema } from './schema'
-import { esUrlPostgres, resolveDbDestino } from './path'
+import { schema } from './schema.js'
+import { esUrlPostgres, resolveDbDestino } from './path.js'
 
 /** Tipo común de base de datos (válido para node-postgres y PGlite). */
 export type DB = PgDatabase<PgQueryResultHKT, typeof schema>

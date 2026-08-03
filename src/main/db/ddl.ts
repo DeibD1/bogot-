@@ -6,7 +6,7 @@ import {
   TAMANOS,
   TIPOS_NOTIFICACION,
   TIPOS_TAREA
-} from '../../shared/dominio'
+} from '../../shared/dominio.js'
 
 const valores = (vs: readonly string[]): string => vs.map((v) => `'${v}'`).join(', ')
 

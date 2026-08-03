@@ -5,10 +5,10 @@
 //     o que ellos crearon.
 // =============================================================================
 import { and, asc, count, eq, inArray, sql } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { festivo, oferta, subtarea, tarea, tramo, usuario } from '../db/schema'
-import { ROLES, TOTAL_TRAMOS } from '../../shared/dominio'
-import { tieneVistaGlobalLectura } from '../../shared/permisos'
+import type { DB } from '../db/client.js'
+import { festivo, oferta, subtarea, tarea, tramo, usuario } from '../db/schema.js'
+import { ROLES, TOTAL_TRAMOS } from '../../shared/dominio.js'
+import { tieneVistaGlobalLectura } from '../../shared/permisos.js'
 import type {
   AgendaDia,
   AgendaItem,
@@ -25,11 +25,11 @@ import type {
   SubtareaInfo,
   TramoAsignado,
   TramoLinea
-} from '../../shared/ipc'
-import { listarAdjuntosOferta } from './adjuntos'
-import { calcularCriticidad } from './criticidad'
-import { esDiaHabil, type Festivos } from './dias-habiles'
-import { addDias } from './fechas'
+} from '../../shared/ipc.js'
+import { listarAdjuntosOferta } from './adjuntos.js'
+import { calcularCriticidad } from './criticidad.js'
+import { esDiaHabil, type Festivos } from './dias-habiles.js'
+import { addDias } from './fechas.js'
 
 /** Ofertas visibles para la sesión: 'todas' o una lista de ids. */
 export async function idsOfertasVisibles(db: DB, sesion: SesionUsuario): Promise<'todas' | number[]> {

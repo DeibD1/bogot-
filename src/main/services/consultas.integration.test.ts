@@ -1,18 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Conexion } from '../db/client'
-import { crearConexion, type DB } from '../db/client'
-import { aplicarEsquema } from '../db/ddl'
-import { usuario } from '../db/schema'
-import type { Rol } from '../../shared/dominio'
-import type { SesionUsuario } from '../../shared/ipc'
+import type { Conexion } from '../db/client.js'
+import { crearConexion, type DB } from '../db/client.js'
+import { aplicarEsquema } from '../db/ddl.js'
+import { usuario } from '../db/schema.js'
+import type { Rol } from '../../shared/dominio.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
 import {
   idsOfertasVisibles,
   obtenerCalendarioUnidad,
   obtenerDetalleOferta,
   obtenerLineaTiempo,
   obtenerResumenOfertas
-} from './consultas'
-import { crearOferta } from './ofertas'
+} from './consultas.js'
+import { crearOferta } from './ofertas.js'
 
 let conexion: Conexion
 let db: DB

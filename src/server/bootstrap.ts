@@ -2,14 +2,14 @@
 // Compartido entre el servidor local (index.ts) y las funciones serverless de
 // Vercel (api/index.ts), para no duplicar la inicialización.
 import { count } from 'drizzle-orm'
-import { crearConexion } from '../main/db/client'
-import { aplicarEsquema } from '../main/db/ddl'
-import { usuario } from '../main/db/schema'
-import { hashPassword } from '../main/services/auth'
-import { crearMailer } from '../main/services/mailer'
-import type { DB } from '../main/db/client'
-import { CONFIG_APP, DB_DESTINO } from './config'
-import type { Contexto } from './contexto'
+import { crearConexion } from '../main/db/client.js'
+import { aplicarEsquema } from '../main/db/ddl.js'
+import { usuario } from '../main/db/schema.js'
+import { hashPassword } from '../main/services/auth.js'
+import { crearMailer } from '../main/services/mailer.js'
+import type { DB } from '../main/db/client.js'
+import { CONFIG_APP, DB_DESTINO } from './config.js'
+import type { Contexto } from './contexto.js'
 
 /**
  * Bootstrap de primer uso: si no hay NINGÚN usuario, crea un líder de la unidad

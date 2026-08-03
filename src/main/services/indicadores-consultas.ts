@@ -7,16 +7,16 @@
 //   - Unidad / ofertas: ofertas APROBADAS cuya finalización real cae en el rango.
 // =============================================================================
 import { and, eq, isNotNull } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { oferta, tramo, usuario } from '../db/schema'
-import { ROLES } from '../../shared/dominio'
+import type { DB } from '../db/client.js'
+import { oferta, tramo, usuario } from '../db/schema.js'
+import { ROLES } from '../../shared/dominio.js'
 import type {
   DatosDashboard,
   FiltroIndicadores,
   IndicadorOferta,
   IndicadorProfesional
-} from '../../shared/ipc'
-import { desviacionPromedio, promedio, tasaPuntualidad } from './indicadores'
+} from '../../shared/ipc.js'
+import { desviacionPromedio, promedio, tasaPuntualidad } from './indicadores.js'
 
 function enRango(fecha: string | null, desde?: string, hasta?: string): boolean {
   if (!fecha) return false

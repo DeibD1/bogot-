@@ -5,11 +5,11 @@
 //  Fase 1 (desviación, indicador y recálculo en cascada).
 // =============================================================================
 import { asc, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { tarea, tramo } from '../db/schema'
-import type { ResultadoCompletar } from '../../shared/ipc'
-import type { Festivos } from './dias-habiles'
-import { cerrarTramo } from './ofertas'
+import type { DB } from '../db/client.js'
+import { tarea, tramo } from '../db/schema.js'
+import type { ResultadoCompletar } from '../../shared/ipc.js'
+import type { Festivos } from './dias-habiles.js'
+import { cerrarTramo } from './ofertas.js'
 
 /**
  * Marca una tarea como completada en nombre de `usuarioId`.

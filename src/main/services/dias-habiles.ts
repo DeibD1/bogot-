@@ -11,7 +11,7 @@
 //
 //  Módulo puro: recibe el conjunto de festivos como parámetro (testeable sin BD).
 // =============================================================================
-import { addDias, diaSemana } from './fechas'
+import { addDias, diaSemana } from './fechas.js'
 
 export type Festivos = ReadonlySet<string>
 

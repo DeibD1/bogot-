@@ -4,9 +4,9 @@
 //  (nombre + ruta local); todos los participantes de la oferta pueden verla.
 // =============================================================================
 import { asc, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { adjunto, tramo, usuario } from '../db/schema'
-import type { AdjuntoInfo } from '../../shared/ipc'
+import type { DB } from '../db/client.js'
+import { adjunto, tramo, usuario } from '../db/schema.js'
+import type { AdjuntoInfo } from '../../shared/ipc.js'
 
 /** Lista todos los adjuntos de una oferta (de todos sus tramos), con autor. */
 export async function listarAdjuntosOferta(db: DB, ofertaId: number): Promise<AdjuntoInfo[]> {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addDias, diaSemana, esAntesODe, parseISO, toISO } from './fechas'
+import { addDias, diaSemana, esAntesODe, parseISO, toISO } from './fechas.js'
 
 describe('fechas (utilidades ISO en UTC)', () => {
   it('parseISO + toISO son inversas', () => {

@@ -1,14 +1,14 @@
 import { asc, eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Conexion } from '../db/client'
-import { crearConexion, type DB } from '../db/client'
-import { aplicarEsquema } from '../db/ddl'
-import { subtarea, tarea, tramo, usuario } from '../db/schema'
-import { NUMERO_TRAMO_APROBACION, type Rol } from '../../shared/dominio'
-import type { SesionUsuario } from '../../shared/ipc'
-import { obtenerMisTramos } from './consultas'
-import { crearOferta } from './ofertas'
-import { crearSubtarea, eliminarSubtarea, marcarSubtarea } from './subtareas'
+import type { Conexion } from '../db/client.js'
+import { crearConexion, type DB } from '../db/client.js'
+import { aplicarEsquema } from '../db/ddl.js'
+import { subtarea, tarea, tramo, usuario } from '../db/schema.js'
+import { NUMERO_TRAMO_APROBACION, type Rol } from '../../shared/dominio.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
+import { obtenerMisTramos } from './consultas.js'
+import { crearOferta } from './ofertas.js'
+import { crearSubtarea, eliminarSubtarea, marcarSubtarea } from './subtareas.js'
 
 let conexion: Conexion
 let db: DB

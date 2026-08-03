@@ -3,24 +3,24 @@
 //  planificacion.ts. Mantienen la lógica de negocio fuera de la UI.
 // =============================================================================
 import { and, asc, eq, gt } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { oferta, tarea, tramo } from '../db/schema'
+import type { DB } from '../db/client.js'
+import { oferta, tarea, tramo } from '../db/schema.js'
 import {
   ETIQUETA_TIPO_TAREA,
   NUMERO_TRAMO_APROBACION,
   TOTAL_TRAMOS,
   type Rol,
   type Tamano
-} from '../../shared/dominio'
-import { diferenciaDiasHabiles, type Festivos } from './dias-habiles'
-import { indicadorCumplimiento } from './indicadores'
-import { idsLideresUnidad, notificar, notificarActivacionTramo } from './notificaciones'
+} from '../../shared/dominio.js'
+import { diferenciaDiasHabiles, type Festivos } from './dias-habiles.js'
+import { indicadorCumplimiento } from './indicadores.js'
+import { idsLideresUnidad, notificar, notificarActivacionTramo } from './notificaciones.js'
 import {
   calcularCierreTramo,
   planificarOferta,
   recalcularDesde,
   type CierreTramo
-} from './planificacion'
+} from './planificacion.js'
 
 export interface CrearOfertaParams {
   cliente: string

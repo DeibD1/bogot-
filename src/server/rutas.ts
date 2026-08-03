@@ -4,16 +4,16 @@
 // sesión global. Todas pasan por middlewareAuth (montado en index.ts).
 import { Router, type Request } from 'express'
 import { eq } from 'drizzle-orm'
-import { soporte as soporteTabla, usuario } from '../main/db/schema'
-import { listarAdjuntosOferta } from '../main/services/adjuntos'
+import { soporte as soporteTabla, usuario } from '../main/db/schema.js'
+import { listarAdjuntosOferta } from '../main/services/adjuntos.js'
 import {
   aprobarOferta,
   entregarCorreccion,
   listarCorrecciones,
   listarPendientesAprobacion,
   rechazarOferta
-} from '../main/services/aprobacion'
-import { cargarFestivos } from '../main/services/calendario'
+} from '../main/services/aprobacion.js'
+import { cargarFestivos } from '../main/services/calendario.js'
 import {
   obtenerAgenda,
   obtenerCalendarioUnidad,
@@ -22,31 +22,31 @@ import {
   obtenerLineaTiempo,
   obtenerMisTramos,
   obtenerResumenOfertas
-} from '../main/services/consultas'
-import { cargarDatosDemostracion } from '../main/services/demo'
-import { deshacerAprobacion, deshacerCompletarTarea } from '../main/services/deshacer'
-import { hoyLocalISO } from '../main/services/fechas'
-import { obtenerIndicadores } from '../main/services/indicadores-consultas'
+} from '../main/services/consultas.js'
+import { cargarDatosDemostracion } from '../main/services/demo.js'
+import { deshacerAprobacion, deshacerCompletarTarea } from '../main/services/deshacer.js'
+import { hoyLocalISO } from '../main/services/fechas.js'
+import { obtenerIndicadores } from '../main/services/indicadores-consultas.js'
 import {
   contarNoLeidas,
   generarAlertasVencimiento,
   listarNotificaciones,
   marcarTodasLeidas
-} from '../main/services/notificaciones'
-import { crearOferta } from '../main/services/ofertas'
-import { reasignarTramo } from '../main/services/reasignacion'
+} from '../main/services/notificaciones.js'
+import { crearOferta } from '../main/services/ofertas.js'
+import { reasignarTramo } from '../main/services/reasignacion.js'
 import {
   crearReporteSoporte,
   listarMisReportes,
   listarReportesSoporte,
   marcarReporteAtendido,
   responderReporteSoporte
-} from '../main/services/soporte'
-import { crearSubtarea, eliminarSubtarea, marcarSubtarea } from '../main/services/subtareas'
-import { completarTarea } from '../main/services/tareas'
-import { actualizarUsuario, crearUsuario, listarUsuarios } from '../main/services/usuarios'
-import { ROLES, type Rol } from '../shared/dominio'
-import { puedeCrearOfertas } from '../shared/permisos'
+} from '../main/services/soporte.js'
+import { crearSubtarea, eliminarSubtarea, marcarSubtarea } from '../main/services/subtareas.js'
+import { completarTarea } from '../main/services/tareas.js'
+import { actualizarUsuario, crearUsuario, listarUsuarios } from '../main/services/usuarios.js'
+import { ROLES, type Rol } from '../shared/dominio.js'
+import { puedeCrearOfertas } from '../shared/permisos.js'
 import type {
   ActualizarUsuarioInput,
   CandidatosPorRol,
@@ -54,10 +54,10 @@ import type {
   MotivoRechazoInput,
   NuevaOfertaInput,
   NuevoUsuarioInput
-} from '../shared/ipc'
-import { sesionDe } from './auth'
-import { type Contexto } from './contexto'
-import { asyncHandler, datosInvalidos, prohibido } from './errors'
+} from '../shared/ipc.js'
+import { sesionDe } from './auth.js'
+import { type Contexto } from './contexto.js'
+import { asyncHandler, datosInvalidos, prohibido } from './errors.js'
 
 /** Entero de query con valor por defecto y recorte a [min, max]. */
 function entero(valor: unknown, porDefecto: number, min: number, max: number): number {

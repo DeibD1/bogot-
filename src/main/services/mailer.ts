@@ -1,7 +1,7 @@
 // Envío de correos vía SMTP (Microsoft 365 / cualquier servidor de la empresa).
 // La configuración llega de database.config.json (clave "smtp").
 import nodemailer, { type Transporter } from 'nodemailer'
-import type { ConfigApp } from '../db/path'
+import type { ConfigApp } from '../db/path.js'
 
 export interface Mailer {
   enviar: (para: string, asunto: string, texto: string) => Promise<void>

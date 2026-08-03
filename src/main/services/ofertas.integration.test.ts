@@ -1,11 +1,11 @@
 import { asc, eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Conexion } from '../db/client'
-import { crearConexion, type DB } from '../db/client'
-import { aplicarEsquema } from '../db/ddl'
-import { oferta, tramo, usuario } from '../db/schema'
-import type { Rol } from '../../shared/dominio'
-import { cerrarTramo, crearOferta } from './ofertas'
+import type { Conexion } from '../db/client.js'
+import { crearConexion, type DB } from '../db/client.js'
+import { aplicarEsquema } from '../db/ddl.js'
+import { oferta, tramo, usuario } from '../db/schema.js'
+import type { Rol } from '../../shared/dominio.js'
+import { cerrarTramo, crearOferta } from './ofertas.js'
 
 // Integración real contra PGlite (PostgreSQL embebido) en memoria.
 let conexion: Conexion

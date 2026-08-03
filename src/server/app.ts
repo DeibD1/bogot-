@@ -3,14 +3,14 @@
 // funciones serverless de Vercel (api/index.ts, exportando el handler).
 import cors from 'cors'
 import express, { type Express } from 'express'
-import { cargarFestivos } from '../main/services/calendario'
-import { hoyLocalISO } from '../main/services/fechas'
-import { generarAlertasVencimiento } from '../main/services/notificaciones'
-import { crearMiddlewareAuth, crearRutasAuth } from './auth'
-import { CRON_SECRET } from './config'
-import type { Contexto } from './contexto'
-import { asyncHandler, middlewareErrores, middlewareNoEncontrado, prohibido } from './errors'
-import { crearRutasApi } from './rutas'
+import { cargarFestivos } from '../main/services/calendario.js'
+import { hoyLocalISO } from '../main/services/fechas.js'
+import { generarAlertasVencimiento } from '../main/services/notificaciones.js'
+import { crearMiddlewareAuth, crearRutasAuth } from './auth.js'
+import { CRON_SECRET } from './config.js'
+import type { Contexto } from './contexto.js'
+import { asyncHandler, middlewareErrores, middlewareNoEncontrado, prohibido } from './errors.js'
+import { crearRutasApi } from './rutas.js'
 
 export function crearApp(ctx: Contexto): Express {
   const app = express()

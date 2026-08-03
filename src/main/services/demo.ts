@@ -7,16 +7,16 @@
 //  todavía (no contamina una base en uso).
 // =============================================================================
 import { and, asc, count, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { oferta, tarea, tramo, usuario } from '../db/schema'
-import { type Rol } from '../../shared/dominio'
-import { esLiderUnidad } from '../../shared/permisos'
-import type { SesionUsuario } from '../../shared/ipc'
-import { aprobarOferta, rechazarOferta } from './aprobacion'
-import { hashPassword } from './auth'
-import { restarDiasHabiles, sumarDiasHabiles, type Festivos } from './dias-habiles'
-import { crearOferta } from './ofertas'
-import { completarTarea } from './tareas'
+import type { DB } from '../db/client.js'
+import { oferta, tarea, tramo, usuario } from '../db/schema.js'
+import { type Rol } from '../../shared/dominio.js'
+import { esLiderUnidad } from '../../shared/permisos.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
+import { aprobarOferta, rechazarOferta } from './aprobacion.js'
+import { hashPassword } from './auth.js'
+import { restarDiasHabiles, sumarDiasHabiles, type Festivos } from './dias-habiles.js'
+import { crearOferta } from './ofertas.js'
+import { completarTarea } from './tareas.js'
 
 const PASSWORD_DEMO = 'Demo#2026'
 

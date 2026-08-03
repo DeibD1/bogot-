@@ -4,7 +4,7 @@ import {
   calcularDesviacionOferta,
   planificarOferta,
   recalcularDesde
-} from './planificacion'
+} from './planificacion.js'
 
 // Inicio lunes 2026-09-07; septiembre 2026 no tiene festivos en Colombia.
 const LUNES = '2026-09-07'

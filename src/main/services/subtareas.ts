@@ -6,10 +6,10 @@
 //  hacerlo cualquier líder de la unidad (quien revise es quien las usa).
 // =============================================================================
 import { eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { subtarea, tarea, tramo } from '../db/schema'
-import { esLiderUnidad } from '../../shared/permisos'
-import type { SesionUsuario } from '../../shared/ipc'
+import type { DB } from '../db/client.js'
+import { subtarea, tarea, tramo } from '../db/schema.js'
+import { esLiderUnidad } from '../../shared/permisos.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
 
 /** Valida que el usuario pueda gestionar las subtareas de la tarea. */
 async function exigirGestion(db: DB, tareaId: number, sesion: SesionUsuario) {

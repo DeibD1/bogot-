@@ -1,11 +1,11 @@
 // Punto de entrada SERVERLESS para Vercel. Vercel expone este archivo como una
 // función en /api/*. Reutiliza exactamente la misma app Express que el servidor
 // local, cacheando el contexto entre invocaciones "en caliente" (warm start).
-import '../src/server/tipos'
+import '../src/server/tipos.js'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Express } from 'express'
-import { crearApp } from '../src/server/app'
-import { crearContexto } from '../src/server/bootstrap'
+import { crearApp } from '../src/server/app.js'
+import { crearContexto } from '../src/server/bootstrap.js'
 
 let appPromesa: Promise<Express> | null = null
 

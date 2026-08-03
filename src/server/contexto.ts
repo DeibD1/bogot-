@@ -1,9 +1,9 @@
 // Contexto compartido de la aplicación: se crea una vez al arrancar el servidor
 // y se pasa a los registradores de rutas.
-import type { Conexion } from '../main/db/client'
-import type { ConfigApp } from '../main/db/path'
-import type { Mailer } from '../main/services/mailer'
-import type { SesionUsuario } from '../shared/ipc'
+import type { Conexion } from '../main/db/client.js'
+import type { ConfigApp } from '../main/db/path.js'
+import type { Mailer } from '../main/services/mailer.js'
+import type { SesionUsuario } from '../shared/ipc.js'
 
 export interface Contexto {
   conexion: Conexion

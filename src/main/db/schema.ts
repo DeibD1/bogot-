@@ -30,7 +30,7 @@ import {
   TAMANOS,
   TIPOS_NOTIFICACION,
   TIPOS_TAREA
-} from '../../shared/dominio'
+} from '../../shared/dominio.js'
 
 // --- 1. TIPOS ENUMERADOS ------------------------------------------------------
 export const rolUsuario = pgEnum('rol_usuario', ROLES)

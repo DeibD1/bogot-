@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calcularCriticidad } from './criticidad'
+import { calcularCriticidad } from './criticidad.js'
 
 // Semana de referencia: lunes 2026-09-07 .. viernes 2026-09-11.
 describe('calcularCriticidad (RF-08 / RF-28)', () => {

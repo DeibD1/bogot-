@@ -6,7 +6,7 @@ import {
   registrarCodigo,
   verificarCodigo2fa,
   VIGENCIA_MINUTOS
-} from './dosfa'
+} from './dosfa.js'
 
 const T0 = 1_000_000_000 // epoch ms de referencia
 

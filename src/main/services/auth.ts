@@ -9,9 +9,9 @@
 // =============================================================================
 import bcrypt from 'bcryptjs'
 import { eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { usuario } from '../db/schema'
-import type { SesionUsuario } from '../../shared/ipc'
+import type { DB } from '../db/client.js'
+import { usuario } from '../db/schema.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
 
 export const MAX_INTENTOS = 5
 export const BLOQUEO_MINUTOS = 15

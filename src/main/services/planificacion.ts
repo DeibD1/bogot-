@@ -9,7 +9,7 @@ import {
   type Rol,
   type Tamano,
   type TipoTarea
-} from '../../shared/dominio'
+} from '../../shared/dominio.js'
 import {
   contarDiasHabiles,
   diferenciaDiasHabiles,
@@ -17,8 +17,8 @@ import {
   normalizarADiaHabil,
   siguienteDiaHabil,
   type Festivos
-} from './dias-habiles'
-import { indicadorCumplimiento } from './indicadores'
+} from './dias-habiles.js'
+import { indicadorCumplimiento } from './indicadores.js'
 
 export interface TramoPlanificado {
   numero: number

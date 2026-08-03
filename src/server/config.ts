@@ -1,7 +1,7 @@
 // Configuración del servidor web. Se lee del entorno (.env) y, para SMTP/soporte,
 // se reutiliza database.config.json a través de leerConfigApp.
 import 'dotenv/config'
-import { leerConfigApp, resolveDbDestino } from '../main/db/path'
+import { leerConfigApp, resolveDbDestino } from '../main/db/path.js'
 
 /** Puerto de escucha (por defecto 3000). */
 export const PUERTO = Number(process.env.PORT ?? 3000)

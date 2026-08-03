@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Conexion } from '../db/client'
-import { crearConexion, type DB } from '../db/client'
-import { aplicarEsquema } from '../db/ddl'
-import { usuario } from '../db/schema'
+import type { Conexion } from '../db/client.js'
+import { crearConexion, type DB } from '../db/client.js'
+import { aplicarEsquema } from '../db/ddl.js'
+import { usuario } from '../db/schema.js'
 import {
   BLOQUEO_MINUTOS,
   hashPassword,
   MAX_INTENTOS,
   validarPoliticaPassword,
   verificarCredenciales
-} from './auth'
+} from './auth.js'
 
 let conexion: Conexion
 let db: DB

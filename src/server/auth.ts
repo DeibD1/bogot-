@@ -4,14 +4,14 @@
 import { Router, type NextFunction, type Request, type RequestHandler, type Response } from 'express'
 import { eq } from 'drizzle-orm'
 import jwt from 'jsonwebtoken'
-import { usuario } from '../main/db/schema'
-import { verificarCredenciales } from '../main/services/auth'
-import { generarCodigo, registrarCodigo, verificarCodigo2fa } from '../main/services/dosfa'
-import type { Rol } from '../shared/dominio'
-import type { Credenciales, SesionUsuario } from '../shared/ipc'
-import { JWT_EXPIRA, JWT_SECRET, SUPABASE_JWT_SECRET } from './config'
-import { dosfaActivo, type Contexto } from './contexto'
-import { asyncHandler, noAutenticado, prohibido } from './errors'
+import { usuario } from '../main/db/schema.js'
+import { verificarCredenciales } from '../main/services/auth.js'
+import { generarCodigo, registrarCodigo, verificarCodigo2fa } from '../main/services/dosfa.js'
+import type { Rol } from '../shared/dominio.js'
+import type { Credenciales, SesionUsuario } from '../shared/ipc.js'
+import { JWT_EXPIRA, JWT_SECRET, SUPABASE_JWT_SECRET } from './config.js'
+import { dosfaActivo, type Contexto } from './contexto.js'
+import { asyncHandler, noAutenticado, prohibido } from './errors.js'
 
 /** Firma un token JWT con los datos de la sesión. */
 export function firmarToken(sesion: SesionUsuario): string {

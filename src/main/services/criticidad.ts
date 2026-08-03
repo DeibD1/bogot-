@@ -5,8 +5,8 @@
 //   - verde:    a tiempo
 //  Módulo puro y testeable.
 // =============================================================================
-import type { Criticidad } from '../../shared/ipc'
-import { contarDiasHabiles, type Festivos } from './dias-habiles'
+import type { Criticidad } from '../../shared/ipc.js'
+import { contarDiasHabiles, type Festivos } from './dias-habiles.js'
 
 /** Días hábiles restantes (inclusivos) que disparan el "amarillo": hoy o mañana hábil. */
 const UMBRAL_PROXIMO = 2

@@ -8,7 +8,7 @@ import {
   normalizarADiaHabil,
   siguienteDiaHabil,
   sumarDiasHabiles
-} from './dias-habiles'
+} from './dias-habiles.js'
 
 // Semana de referencia: lunes 2026-09-07 .. domingo 2026-09-13 (sin festivos).
 const FESTIVO_MIE = new Set(['2026-09-09']) // miércoles convertido en festivo

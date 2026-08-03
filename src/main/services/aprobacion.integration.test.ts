@@ -1,20 +1,20 @@
 import { and, asc, eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Conexion } from '../db/client'
-import { crearConexion, type DB } from '../db/client'
-import { aplicarEsquema } from '../db/ddl'
-import { oferta, tarea, tramo, usuario } from '../db/schema'
-import type { Rol } from '../../shared/dominio'
-import type { SesionUsuario } from '../../shared/ipc'
+import type { Conexion } from '../db/client.js'
+import { crearConexion, type DB } from '../db/client.js'
+import { aplicarEsquema } from '../db/ddl.js'
+import { oferta, tarea, tramo, usuario } from '../db/schema.js'
+import type { Rol } from '../../shared/dominio.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
 import {
   aprobarOferta,
   entregarCorreccion,
   listarCorrecciones,
   listarPendientesAprobacion,
   rechazarOferta
-} from './aprobacion'
-import { crearOferta } from './ofertas'
-import { completarTarea } from './tareas'
+} from './aprobacion.js'
+import { crearOferta } from './ofertas.js'
+import { completarTarea } from './tareas.js'
 
 let conexion: Conexion
 let db: DB

@@ -7,12 +7,12 @@
 //     El barrido es idempotente: una sola alerta por tramo y tipo.
 // =============================================================================
 import { and, desc, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { notificacion, oferta, tramo, usuario } from '../db/schema'
-import type { TipoNotificacion } from '../../shared/dominio'
-import type { NotificacionInfo } from '../../shared/ipc'
-import { calcularCriticidad } from './criticidad'
-import type { Festivos } from './dias-habiles'
+import type { DB } from '../db/client.js'
+import { notificacion, oferta, tramo, usuario } from '../db/schema.js'
+import type { TipoNotificacion } from '../../shared/dominio.js'
+import type { NotificacionInfo } from '../../shared/ipc.js'
+import { calcularCriticidad } from './criticidad.js'
+import type { Festivos } from './dias-habiles.js'
 
 export interface NuevaNotificacion {
   usuarioId: number

@@ -9,21 +9,21 @@
 //     desviación e indicador originales.
 // =============================================================================
 import { and, asc, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { correccion, oferta, tarea, tramo, usuario as usuarioTabla } from '../db/schema'
-import { NUMERO_TRAMO_APROBACION } from '../../shared/dominio'
+import type { DB } from '../db/client.js'
+import { correccion, oferta, tarea, tramo, usuario as usuarioTabla } from '../db/schema.js'
+import { NUMERO_TRAMO_APROBACION } from '../../shared/dominio.js'
 import type {
   CorreccionPendiente,
   MotivoRechazoInput,
   PendienteAprobacion,
   SesionUsuario
-} from '../../shared/ipc'
-import { puedeAprobar } from '../../shared/permisos'
-import { calcularCriticidad } from './criticidad'
-import { cargarSubtareas } from './consultas'
-import { diferenciaDiasHabiles, fechaLimiteTramo, siguienteDiaHabil, type Festivos } from './dias-habiles'
-import { notificar, notificarActivacionTramo, notificarCorreccion } from './notificaciones'
-import { cerrarTramo } from './ofertas'
+} from '../../shared/ipc.js'
+import { puedeAprobar } from '../../shared/permisos.js'
+import { calcularCriticidad } from './criticidad.js'
+import { cargarSubtareas } from './consultas.js'
+import { diferenciaDiasHabiles, fechaLimiteTramo, siguienteDiaHabil, type Festivos } from './dias-habiles.js'
+import { notificar, notificarActivacionTramo, notificarCorreccion } from './notificaciones.js'
+import { cerrarTramo } from './ofertas.js'
 
 async function obtenerOferta(db: DB, ofertaId: number) {
   const filas = await db.select().from(oferta).where(eq(oferta.id, ofertaId))

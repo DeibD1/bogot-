@@ -5,11 +5,11 @@
 //  El histórico del titular original queda trazado en `tramo.reasignado_de`.
 // =============================================================================
 import { eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { oferta, reasignacion, tramo, usuario } from '../db/schema'
-import { esLiderUnidad } from '../../shared/permisos'
-import type { SesionUsuario } from '../../shared/ipc'
-import { notificar } from './notificaciones'
+import type { DB } from '../db/client.js'
+import { oferta, reasignacion, tramo, usuario } from '../db/schema.js'
+import { esLiderUnidad } from '../../shared/permisos.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
+import { notificar } from './notificaciones.js'
 
 export async function reasignarTramo(
   db: DB,

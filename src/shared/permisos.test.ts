@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { ROLES } from './dominio'
-import { esLiderUnidad, esProfesional, puedeAprobar, tieneAccesoGlobal } from './permisos'
+import { ROLES } from './dominio.js'
+import { esLiderUnidad, esProfesional, puedeAprobar, tieneAccesoGlobal } from './permisos.js'
 
 describe('permisos por rol', () => {
   it('solo el líder de la unidad aprueba y tiene acceso global (RF-18, RF-22)', () => {

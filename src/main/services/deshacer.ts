@@ -8,12 +8,12 @@
 //  entregar) y se notifica a quien quede des-activado.
 // =============================================================================
 import { and, asc, eq, gt } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { oferta, tarea, tramo } from '../db/schema'
-import { NUMERO_TRAMO_APROBACION, TOTAL_TRAMOS } from '../../shared/dominio'
-import { puedeAprobar } from '../../shared/permisos'
-import type { SesionUsuario } from '../../shared/ipc'
-import { notificar } from './notificaciones'
+import type { DB } from '../db/client.js'
+import { oferta, tarea, tramo } from '../db/schema.js'
+import { NUMERO_TRAMO_APROBACION, TOTAL_TRAMOS } from '../../shared/dominio.js'
+import { puedeAprobar } from '../../shared/permisos.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
+import { notificar } from './notificaciones.js'
 
 /** Revierte el "completar" de una tarea propia (RF de corrección de errores). */
 export async function deshacerCompletarTarea(

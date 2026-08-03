@@ -1,18 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Conexion } from '../db/client'
-import { crearConexion, type DB } from '../db/client'
-import { aplicarEsquema } from '../db/ddl'
-import { usuario } from '../db/schema'
-import type { Rol } from '../../shared/dominio'
-import type { SesionUsuario } from '../../shared/ipc'
-import { listarNotificaciones } from './notificaciones'
+import type { Conexion } from '../db/client.js'
+import { crearConexion, type DB } from '../db/client.js'
+import { aplicarEsquema } from '../db/ddl.js'
+import { usuario } from '../db/schema.js'
+import type { Rol } from '../../shared/dominio.js'
+import type { SesionUsuario } from '../../shared/ipc.js'
+import { listarNotificaciones } from './notificaciones.js'
 import {
   crearReporteSoporte,
   listarMisReportes,
   listarReportesSoporte,
   marcarReporteAtendido,
   responderReporteSoporte
-} from './soporte'
+} from './soporte.js'
 
 let conexion: Conexion
 let db: DB

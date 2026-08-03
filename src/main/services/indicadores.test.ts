@@ -7,7 +7,7 @@ import {
   redondear2,
   rendimientoPromedio,
   tasaPuntualidad
-} from './indicadores'
+} from './indicadores.js'
 
 describe('indicadorCumplimiento (§11.2)', () => {
   it('desviación ≤ 0 -> 100 (incluye adelanto, sin premio extra)', () => {

@@ -4,12 +4,12 @@
 //  Se desactiva (no se borra) para conservar el histórico de indicadores.
 // =============================================================================
 import { count, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { usuario } from '../db/schema'
-import { ROLES, type Rol } from '../../shared/dominio'
-import { esLiderUnidad } from '../../shared/permisos'
-import type { SesionUsuario, UsuarioAdmin } from '../../shared/ipc'
-import { hashPassword, validarPoliticaPassword } from './auth'
+import type { DB } from '../db/client.js'
+import { usuario } from '../db/schema.js'
+import { ROLES, type Rol } from '../../shared/dominio.js'
+import { esLiderUnidad } from '../../shared/permisos.js'
+import type { SesionUsuario, UsuarioAdmin } from '../../shared/ipc.js'
+import { hashPassword, validarPoliticaPassword } from './auth.js'
 
 function exigirLider(sesion: SesionUsuario): void {
   if (!esLiderUnidad(sesion.rol)) {

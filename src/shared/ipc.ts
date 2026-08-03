@@ -7,7 +7,7 @@ import type {
   Tamano,
   TipoNotificacion,
   TipoTarea
-} from './dominio'
+} from './dominio.js'
 
 export const CANALES = {
   login: 'auth:login',

@@ -5,11 +5,11 @@
 //  unidad por la campana — y por correo si hay SMTP configurado.
 // =============================================================================
 import { desc, eq } from 'drizzle-orm'
-import type { DB } from '../db/client'
-import { soporte, usuario } from '../db/schema'
-import { esLiderUnidad } from '../../shared/permisos'
-import type { ReporteSoporte, SesionUsuario } from '../../shared/ipc'
-import { idsLideresUnidad, notificar } from './notificaciones'
+import type { DB } from '../db/client.js'
+import { soporte, usuario } from '../db/schema.js'
+import { esLiderUnidad } from '../../shared/permisos.js'
+import type { ReporteSoporte, SesionUsuario } from '../../shared/ipc.js'
+import { idsLideresUnidad, notificar } from './notificaciones.js'
 
 /** Límite del pantallazo en base64 (~3 MB de imagen). */
 const MAX_CAPTURA = 4_500_000

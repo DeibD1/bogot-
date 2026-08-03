@@ -2,7 +2,7 @@
 //  Permisos por rol (RNF-06, RF-18). Helpers puros, usados tanto por el proceso
 //  principal (para hacer cumplir el acceso) como por el renderer (para la UI).
 // =============================================================================
-import type { Rol } from './dominio'
+import type { Rol } from './dominio.js'
 
 /** El líder de la unidad: acceso de solo lectura a TODA la operación. */
 export function esLiderUnidad(rol: Rol): boolean {
