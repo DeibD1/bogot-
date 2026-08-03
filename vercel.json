@@ -6,5 +6,5 @@
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "crons": [{ "path": "/api/cron/alertas", "schedule": "0 * * * *" }]
+  "crons": [{ "path": "/api/cron/alertas", "schedule": "0 13 * * *" }]
 }
