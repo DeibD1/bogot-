@@ -154,9 +154,6 @@ export function Login({ onAutenticado, mensajeInicial }: LoginProps): JSX.Elemen
               </Button>
             </form>
           )}
-
-          {paso === 'credenciales' && (
-          )}
         </CardContent>
       </Card>
     </div>
