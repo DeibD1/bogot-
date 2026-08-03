@@ -156,9 +156,6 @@ export function Login({ onAutenticado, mensajeInicial }: LoginProps): JSX.Elemen
           )}
 
           {paso === 'credenciales' && (
-            <p className="mt-4 text-center text-xs text-muted-foreground">
-              Primer uso (base nueva): <code>admin@local</code> · <code>Admin#2026</code>
-            </p>
           )}
         </CardContent>
       </Card>
