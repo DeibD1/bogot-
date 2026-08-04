@@ -13,6 +13,43 @@ import type { TipoNotificacion } from '../../shared/dominio.js'
 import type { NotificacionInfo } from '../../shared/ipc.js'
 import { calcularCriticidad } from './criticidad.js'
 import type { Festivos } from './dias-habiles.js'
+import type { Mailer } from './mailer.js'
+
+const ASUNTO: Record<TipoNotificacion, string> = {
+  compromiso: 'Gestor de Ofertas: nueva tarea a tu cargo',
+  vencimiento_proximo: 'Gestor de Ofertas: un plazo está próximo a vencer',
+  retraso: 'Gestor de Ofertas: un plazo se venció'
+}
+
+/**
+ * Mailer activo del proceso (RF-27 por correo). Se registra una vez al armar
+ * el contexto (crearContexto -> registrarMailer) y de ahí en adelante toda
+ * notificación creada con `notificar()` también se envía por correo,
+ * reutilizando el mismo mensaje y destinatario que ya recibe en la app.
+ * Si no hay mailer configurado (sin RESEND_API_KEY/SMTP), queda en null y
+ * la app sigue funcionando solo con notificaciones dentro de la app.
+ */
+let mailerActivo: Mailer | null = null
+
+export function registrarMailer(m: Mailer | null): void {
+  mailerActivo = m
+}
+
+/** Envía el correo para una notificación ya insertada; nunca revienta el flujo si falla. */
+async function enviarCorreoNotificacion(db: DB, n: NuevaNotificacion): Promise<void> {
+  if (!mailerActivo) return
+  try {
+    const filas = await db
+      .select({ email: usuario.email })
+      .from(usuario)
+      .where(eq(usuario.id, n.usuarioId))
+    const email = filas[0]?.email
+    if (!email) return
+    await mailerActivo.enviar(email, ASUNTO[n.tipo], n.mensaje)
+  } catch (e) {
+    console.error(`[correo] No se pudo enviar la notificación (usuario ${n.usuarioId}, tipo ${n.tipo}):`, e)
+  }
+}
 
 export interface NuevaNotificacion {
   usuarioId: number
@@ -24,7 +61,7 @@ export interface NuevaNotificacion {
   unicaPorTramo?: boolean
 }
 
-/** Inserta una notificación. Devuelve false si se omitió por deduplicación. */
+/** Inserta una notificación (y envía el correo correspondiente). Devuelve false si se omitió por deduplicación. */
 export async function notificar(db: DB, n: NuevaNotificacion): Promise<boolean> {
   if (n.unicaPorTramo && n.tramoId) {
     const previas = await db
@@ -46,6 +83,7 @@ export async function notificar(db: DB, n: NuevaNotificacion): Promise<boolean> 
     ofertaId: n.ofertaId,
     tramoId: n.tramoId
   })
+  await enviarCorreoNotificacion(db, n)
   return true
 }
 

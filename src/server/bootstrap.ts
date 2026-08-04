@@ -7,6 +7,7 @@ import { aplicarEsquema } from '../main/db/ddl.js'
 import { usuario } from '../main/db/schema.js'
 import { hashPassword } from '../main/services/auth.js'
 import { crearMailer } from '../main/services/mailer.js'
+import { registrarMailer } from '../main/services/notificaciones.js'
 import type { DB } from '../main/db/client.js'
 import { CONFIG_APP, DB_DESTINO } from './config.js'
 import type { Contexto } from './contexto.js'
@@ -36,5 +37,6 @@ export async function crearContexto(): Promise<Contexto> {
   await aplicarEsquema(conexion.ejecutar) // idempotente
   await asegurarUsuarioInicial(conexion.db)
   const mailer = crearMailer(CONFIG_APP)
+  registrarMailer(mailer)
   return { conexion, mailer, config: CONFIG_APP, pendientes2fa: new Map() }
 }
