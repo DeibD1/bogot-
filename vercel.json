@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run web:build",
+  "buildCommand": "chmod -R +x node_modules/.bin && npm run web:build",
   "outputDirectory": "dist-web",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
