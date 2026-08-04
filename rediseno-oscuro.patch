@@ -1,0 +1,322 @@
+diff --git a/src/renderer/src/components/CriticidadBadge.tsx b/src/renderer/src/components/CriticidadBadge.tsx
+index a6479d4..3e2c8e5 100644
+--- a/src/renderer/src/components/CriticidadBadge.tsx
++++ b/src/renderer/src/components/CriticidadBadge.tsx
+@@ -8,14 +8,20 @@ const ETIQUETA: Record<Criticidad, string> = {
+ }
+ 
+ const CLASES: Record<Criticidad, string> = {
+-  verde: 'bg-estado-atiempo/15 text-estado-atiempo',
+-  amarillo: 'bg-estado-proximo/15 text-estado-proximo',
+-  rojo: 'bg-estado-vencido/15 text-estado-vencido'
++  verde: 'bg-estado-atiempo/10 text-estado-atiempo ring-1 ring-inset ring-estado-atiempo/25',
++  amarillo: 'bg-estado-proximo/10 text-estado-proximo ring-1 ring-inset ring-estado-proximo/25',
++  rojo: 'bg-estado-vencido/10 text-estado-vencido ring-1 ring-inset ring-estado-vencido/25'
+ }
+ 
+ export function CriticidadBadge({ nivel }: { nivel: Criticidad }): JSX.Element {
+   return (
+-    <span className={cn('inline-block rounded-full px-2 py-0.5 text-xs font-medium', CLASES[nivel])}>
++    <span
++      className={cn(
++        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium',
++        CLASES[nivel]
++      )}
++    >
++      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+       {ETIQUETA[nivel]}
+     </span>
+   )
+diff --git a/src/renderer/src/components/Dashboard.tsx b/src/renderer/src/components/Dashboard.tsx
+index abe2bfa..beecf24 100644
+--- a/src/renderer/src/components/Dashboard.tsx
++++ b/src/renderer/src/components/Dashboard.tsx
+@@ -168,17 +168,17 @@ function VistaLiderUnidad({ ofertaSolicitada, onAtendida, sesion }: NavegacionOf
+             <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+               {TARJETAS.map(({ clave, etiqueta }) => (
+                 <Card key={clave} className="p-4">
+-                  <div className="text-3xl font-bold text-primary">{stats[clave]}</div>
++                  <div className="font-display text-3xl font-bold text-primary">{stats[clave]}</div>
+                   <div className="text-sm text-muted-foreground">{etiqueta}</div>
+                 </Card>
+               ))}
+             </section>
+             <section>
+-              <h2 className="mb-3 text-lg font-medium">Todas las ofertas</h2>
++              <h2 className="mb-3 font-display text-lg font-medium">Todas las ofertas</h2>
+               <TablaOfertas ofertas={ofertas} onSeleccionar={setOfertaAbierta} />
+               <p className="mt-2 text-xs text-muted-foreground">
+                 Haz clic en una oferta para ver el detalle de su proceso. · Base de datos:{' '}
+-                <code>{stats.rutaDb}</code>
++                <code className="font-mono text-accent/80">{stats.rutaDb}</code>
+               </p>
+             </section>
+           </div>
+@@ -198,11 +198,11 @@ export function Dashboard({ sesion, onCerrarSesion }: DashboardProps): JSX.Eleme
+ 
+   return (
+     <div className="min-h-screen">
+-      <header className="flex items-center justify-between border-b bg-card px-8 py-4">
++      <header className="flex items-center justify-between border-b border-t-2 border-t-primary bg-card px-8 py-4">
+         <div>
+-          <h1 className="text-xl font-semibold tracking-tight">Gestor de Ofertas</h1>
++          <h1 className="font-display text-xl font-semibold tracking-tight">Gestor de Ofertas</h1>
+           <p className="text-sm text-muted-foreground">
+-            {sesion.nombre} · {ETIQUETA_ROL[sesion.rol]}
++            {sesion.nombre} · <span className="text-accent">{ETIQUETA_ROL[sesion.rol]}</span>
+             {accesoGlobal && ' · solo lectura global'}
+           </p>
+         </div>
+diff --git a/src/renderer/src/components/Login.tsx b/src/renderer/src/components/Login.tsx
+index a35208a..50c5c0b 100644
+--- a/src/renderer/src/components/Login.tsx
++++ b/src/renderer/src/components/Login.tsx
+@@ -62,10 +62,11 @@ export function Login({ onAutenticado, mensajeInicial }: LoginProps): JSX.Elemen
+   }
+ 
+   return (
+-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
++    <div className="flex min-h-screen items-center justify-center p-4">
+       <Card className="w-full max-w-sm">
+         <CardHeader>
+-          <CardTitle className="text-xl">Gestor de Ofertas</CardTitle>
++          <div className="mb-1 h-1 w-10 rounded-full bg-primary" />
++          <CardTitle className="text-2xl">Gestor de Ofertas</CardTitle>
+           <p className="text-sm text-muted-foreground">
+             {paso === 'credenciales' ? 'Inicia sesión para continuar' : 'Verificación en dos pasos'}
+           </p>
+diff --git a/src/renderer/src/components/ui/button.tsx b/src/renderer/src/components/ui/button.tsx
+index aa5418f..f2d42d6 100644
+--- a/src/renderer/src/components/ui/button.tsx
++++ b/src/renderer/src/components/ui/button.tsx
+@@ -3,15 +3,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
+ import { cn } from '../../lib/utils'
+ 
+ const buttonVariants = cva(
+-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
++  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold tracking-tight transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]',
+   {
+     variants: {
+       variant: {
+-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
++        default: 'bg-primary text-primary-foreground shadow-glow hover:bg-primary/90',
+         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+-        ghost: 'hover:bg-accent hover:text-accent-foreground'
++        outline:
++          'border border-input bg-transparent text-foreground hover:border-primary/40 hover:bg-accent/10 hover:text-accent',
++        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/70',
++        ghost: 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+       },
+       size: {
+         default: 'h-10 px-4 py-2',
+diff --git a/src/renderer/src/components/ui/card.tsx b/src/renderer/src/components/ui/card.tsx
+index 6b157fd..de7ff4d 100644
+--- a/src/renderer/src/components/ui/card.tsx
++++ b/src/renderer/src/components/ui/card.tsx
+@@ -3,7 +3,14 @@ import { cn } from '../../lib/utils'
+ 
+ export const Card = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+   ({ className, ...props }, ref) => (
+-    <div ref={ref} className={cn('rounded-xl border bg-card text-card-foreground shadow-sm', className)} {...props} />
++    <div
++      ref={ref}
++      className={cn(
++        'rounded-xl border border-border/80 bg-card text-card-foreground shadow-card',
++        className
++      )}
++      {...props}
++    />
+   )
+ )
+ Card.displayName = 'Card'
+@@ -17,7 +24,11 @@ CardHeader.displayName = 'CardHeader'
+ 
+ export const CardTitle = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+   ({ className, ...props }, ref) => (
+-    <div ref={ref} className={cn('text-lg font-semibold leading-none tracking-tight', className)} {...props} />
++    <div
++      ref={ref}
++      className={cn('font-display text-lg font-semibold leading-none tracking-tight', className)}
++      {...props}
++    />
+   )
+ )
+ CardTitle.displayName = 'CardTitle'
+diff --git a/src/renderer/src/components/ui/input.tsx b/src/renderer/src/components/ui/input.tsx
+index a3735ca..733bd78 100644
+--- a/src/renderer/src/components/ui/input.tsx
++++ b/src/renderer/src/components/ui/input.tsx
+@@ -7,7 +7,7 @@ export const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTML
+       type={type}
+       ref={ref}
+       className={cn(
+-        'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
++        'flex h-10 w-full rounded-md border border-input bg-secondary/40 px-3 py-2 text-sm text-foreground shadow-sm ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50',
+         className
+       )}
+       {...props}
+diff --git a/src/renderer/src/components/ui/label.tsx b/src/renderer/src/components/ui/label.tsx
+index de7c9f9..64bf838 100644
+--- a/src/renderer/src/components/ui/label.tsx
++++ b/src/renderer/src/components/ui/label.tsx
+@@ -5,7 +5,7 @@ export const Label = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTML
+   ({ className, ...props }, ref) => (
+     <label
+       ref={ref}
+-      className={cn('text-sm font-medium leading-none', className)}
++      className={cn('text-sm font-medium leading-none text-foreground/90', className)}
+       {...props}
+     />
+   )
+diff --git a/src/renderer/src/index.css b/src/renderer/src/index.css
+index eaf9bcb..37bd8ca 100644
+--- a/src/renderer/src/index.css
++++ b/src/renderer/src/index.css
+@@ -1,36 +1,80 @@
++@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
++
+ @tailwind base;
+ @tailwind components;
+ @tailwind utilities;
+ 
+ @layer base {
+   :root {
+-    --background: 0 0% 100%;
+-    --foreground: 222 47% 11%;
+-    --card: 0 0% 100%;
+-    --card-foreground: 222 47% 11%;
+-    --primary: 222 47% 31%;
+-    --primary-foreground: 210 40% 98%;
+-    --secondary: 210 40% 96%;
+-    --secondary-foreground: 222 47% 11%;
+-    --muted: 210 40% 96%;
+-    --muted-foreground: 215 16% 47%;
+-    --accent: 210 40% 96%;
+-    --accent-foreground: 222 47% 11%;
+-    --destructive: 0 84% 60%;
+-    --destructive-foreground: 210 40% 98%;
+-    --border: 214 32% 91%;
+-    --input: 214 32% 91%;
+-    --ring: 222 47% 31%;
+-    --radius: 0.5rem;
++    /* Tema oscuro institucional: grafito azulado + acento dorado. */
++    --background: 222 30% 7%;
++    --foreground: 220 25% 94%;
++    --card: 222 26% 11%;
++    --card-foreground: 220 25% 94%;
++    --primary: 42 66% 51%;
++    --primary-foreground: 222 40% 9%;
++    --secondary: 222 22% 16%;
++    --secondary-foreground: 220 25% 94%;
++    --muted: 222 22% 15%;
++    --muted-foreground: 220 12% 63%;
++    --accent: 176 45% 48%;
++    --accent-foreground: 222 40% 9%;
++    --destructive: 0 78% 63%;
++    --destructive-foreground: 220 25% 97%;
++    --border: 222 20% 20%;
++    --input: 222 20% 18%;
++    --ring: 42 66% 51%;
++    --radius: 0.625rem;
+   }
+ 
+   * {
+     @apply border-border;
+   }
+ 
++  html {
++    color-scheme: dark;
++  }
++
+   body {
+-    @apply bg-background text-foreground;
+-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
++    @apply bg-background text-foreground antialiased;
++    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
++    background-image:
++      radial-gradient(ellipse 900px 500px at 15% -10%, hsl(42 66% 51% / 0.08), transparent),
++      radial-gradient(ellipse 700px 500px at 100% 0%, hsl(176 45% 48% / 0.06), transparent);
++    background-attachment: fixed;
+     margin: 0;
+   }
++
++  h1,
++  h2,
++  h3,
++  h4 {
++    font-family: 'Sora', 'Inter', system-ui, sans-serif;
++    letter-spacing: -0.01em;
++  }
++
++  code,
++  .font-mono {
++    font-family: 'JetBrains Mono', ui-monospace, monospace;
++  }
++
++  ::selection {
++    background: hsl(var(--primary) / 0.35);
++    color: hsl(var(--foreground));
++  }
++
++  ::-webkit-scrollbar {
++    width: 10px;
++    height: 10px;
++  }
++  ::-webkit-scrollbar-track {
++    background: transparent;
++  }
++  ::-webkit-scrollbar-thumb {
++    background: hsl(var(--border));
++    border-radius: 999px;
++  }
++  ::-webkit-scrollbar-thumb:hover {
++    background: hsl(220 12% 32%);
++  }
+ }
+diff --git a/src/web/index.html b/src/web/index.html
+index ba046db..a3df844 100644
+--- a/src/web/index.html
++++ b/src/web/index.html
+@@ -3,6 +3,9 @@
+   <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++    <meta name="theme-color" content="#10141c" />
++    <link rel="preconnect" href="https://fonts.googleapis.com" />
++    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+     <title>Gestor de Ofertas</title>
+   </head>
+   <body>
+diff --git a/tailwind.config.js b/tailwind.config.js
+index 72f01e0..10b9f21 100644
+--- a/tailwind.config.js
++++ b/tailwind.config.js
+@@ -38,13 +38,22 @@ export default {
+           DEFAULT: 'hsl(var(--card))',
+           foreground: 'hsl(var(--card-foreground))'
+         },
+-        // Código de colores de criticidad (RF-28)
++        // Código de colores de criticidad (RF-28), calibrado para fondo oscuro
+         estado: {
+-          atiempo: 'hsl(142 71% 45%)',
+-          proximo: 'hsl(45 93% 47%)',
+-          vencido: 'hsl(0 84% 60%)'
++          atiempo: 'hsl(152 55% 52%)',
++          proximo: 'hsl(42 92% 58%)',
++          vencido: 'hsl(0 78% 63%)'
+         }
+       },
++      fontFamily: {
++        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
++        display: ['Sora', 'Inter', 'system-ui', 'sans-serif'],
++        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
++      },
++      boxShadow: {
++        card: '0 1px 2px hsl(222 40% 3% / 0.4), 0 8px 24px -12px hsl(222 40% 3% / 0.6)',
++        glow: '0 0 0 1px hsl(42 66% 51% / 0.15), 0 8px 30px -8px hsl(42 66% 51% / 0.25)'
++      },
+       borderRadius: {
+         lg: 'var(--radius)',
+         md: 'calc(var(--radius) - 2px)',

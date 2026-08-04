@@ -168,17 +168,17 @@ function VistaLiderUnidad({ ofertaSolicitada, onAtendida, sesion }: NavegacionOf
             <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {TARJETAS.map(({ clave, etiqueta }) => (
                 <Card key={clave} className="p-4">
-                  <div className="text-3xl font-bold text-primary">{stats[clave]}</div>
+                  <div className="font-display text-3xl font-bold text-primary">{stats[clave]}</div>
                   <div className="text-sm text-muted-foreground">{etiqueta}</div>
                 </Card>
               ))}
             </section>
             <section>
-              <h2 className="mb-3 text-lg font-medium">Todas las ofertas</h2>
+              <h2 className="mb-3 font-display text-lg font-medium">Todas las ofertas</h2>
               <TablaOfertas ofertas={ofertas} onSeleccionar={setOfertaAbierta} />
               <p className="mt-2 text-xs text-muted-foreground">
                 Haz clic en una oferta para ver el detalle de su proceso. · Base de datos:{' '}
-                <code>{stats.rutaDb}</code>
+                <code className="font-mono text-accent/80">{stats.rutaDb}</code>
               </p>
             </section>
           </div>
@@ -198,11 +198,11 @@ export function Dashboard({ sesion, onCerrarSesion }: DashboardProps): JSX.Eleme
 
   return (
     <div className="min-h-screen">
-      <header className="flex items-center justify-between border-b bg-card px-8 py-4">
+      <header className="flex items-center justify-between border-b border-t-2 border-t-primary bg-card px-8 py-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Gestor de Ofertas</h1>
+          <h1 className="font-display text-xl font-semibold tracking-tight">Gestor de Ofertas</h1>
           <p className="text-sm text-muted-foreground">
-            {sesion.nombre} · {ETIQUETA_ROL[sesion.rol]}
+            {sesion.nombre} · <span className="text-accent">{ETIQUETA_ROL[sesion.rol]}</span>
             {accesoGlobal && ' · solo lectura global'}
           </p>
         </div>

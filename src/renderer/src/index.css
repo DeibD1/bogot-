@@ -1,36 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --primary: 222 47% 31%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 47% 31%;
-    --radius: 0.5rem;
+    /* Tema oscuro institucional: grafito azulado + acento dorado. */
+    --background: 222 30% 7%;
+    --foreground: 220 25% 94%;
+    --card: 222 26% 11%;
+    --card-foreground: 220 25% 94%;
+    --primary: 42 66% 51%;
+    --primary-foreground: 222 40% 9%;
+    --secondary: 222 22% 16%;
+    --secondary-foreground: 220 25% 94%;
+    --muted: 222 22% 15%;
+    --muted-foreground: 220 12% 63%;
+    --accent: 176 45% 48%;
+    --accent-foreground: 222 40% 9%;
+    --destructive: 0 78% 63%;
+    --destructive-foreground: 220 25% 97%;
+    --border: 222 20% 20%;
+    --input: 222 20% 18%;
+    --ring: 42 66% 51%;
+    --radius: 0.625rem;
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-background text-foreground;
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -10%, hsl(42 66% 51% / 0.08), transparent),
+      radial-gradient(ellipse 700px 500px at 100% 0%, hsl(176 45% 48% / 0.06), transparent);
+    background-attachment: fixed;
     margin: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Sora', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  code,
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.35);
+    color: hsl(var(--foreground));
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(220 12% 32%);
   }
 }

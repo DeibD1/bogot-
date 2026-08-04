@@ -38,12 +38,21 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        // Código de colores de criticidad (RF-28)
+        // Código de colores de criticidad (RF-28), calibrado para fondo oscuro
         estado: {
-          atiempo: 'hsl(142 71% 45%)',
-          proximo: 'hsl(45 93% 47%)',
-          vencido: 'hsl(0 84% 60%)'
+          atiempo: 'hsl(152 55% 52%)',
+          proximo: 'hsl(42 92% 58%)',
+          vencido: 'hsl(0 78% 63%)'
         }
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['Sora', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+      },
+      boxShadow: {
+        card: '0 1px 2px hsl(222 40% 3% / 0.4), 0 8px 24px -12px hsl(222 40% 3% / 0.6)',
+        glow: '0 0 0 1px hsl(42 66% 51% / 0.15), 0 8px 30px -8px hsl(42 66% 51% / 0.25)'
       },
       borderRadius: {
         lg: 'var(--radius)',

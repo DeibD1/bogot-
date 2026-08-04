@@ -62,10 +62,11 @@ export function Login({ onAutenticado, mensajeInicial }: LoginProps): JSX.Elemen
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
+    <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-xl">Gestor de Ofertas</CardTitle>
+          <div className="mb-1 h-1 w-10 rounded-full bg-primary" />
+          <CardTitle className="text-2xl">Gestor de Ofertas</CardTitle>
           <p className="text-sm text-muted-foreground">
             {paso === 'credenciales' ? 'Inicia sesión para continuar' : 'Verificación en dos pasos'}
           </p>
