@@ -141,14 +141,12 @@ export function crearRutasAuth(ctx: Contexto): Router {
   router.post(
     '/verificar-codigo',
     asyncHandler(async (req, res) => {
-      const { email, codigo } = (req.body ?? {}) as { email?: string; codigo?: string }
-      const correo = (email ?? '').trim().toLowerCase()
-      const v = verificarCodigo2fa(correo, codigo ?? '')
-     if (v.ok === false) {
-+        const error = v as { ok: false; mensaje: string }
-+        res.status(401).json({ estado: 'error', mensaje: error.mensaje })
-         return
-       }
+    const v = verificarCodigo2fa(correo, codigo ?? '')
+      if (v.ok === false) {
+        const error = v as { ok: false; mensaje: string }
+        res.status(401).json({ estado: 'error', mensaje: error.mensaje })
+        return
+      }
       const s = ctx.pendientes2fa.get(correo)
       if (!s) {
         res.status(401).json({ estado: 'error', mensaje: 'La verificación expiró. Vuelve a iniciar sesión.' })
