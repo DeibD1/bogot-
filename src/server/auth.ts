@@ -144,10 +144,11 @@ export function crearRutasAuth(ctx: Contexto): Router {
       const { email, codigo } = (req.body ?? {}) as { email?: string; codigo?: string }
       const correo = (email ?? '').trim().toLowerCase()
       const v = verificarCodigo2fa(correo, codigo ?? '')
-      if (!v.ok) {
-        res.status(401).json({ estado: 'error', mensaje: v.mensaje })
-        return
-      }
+     if (v.ok === false) {
++        const error = v as { ok: false; mensaje: string }
++        res.status(401).json({ estado: 'error', mensaje: error.mensaje })
+         return
+       }
       const s = ctx.pendientes2fa.get(correo)
       if (!s) {
         res.status(401).json({ estado: 'error', mensaje: 'La verificación expiró. Vuelve a iniciar sesión.' })
