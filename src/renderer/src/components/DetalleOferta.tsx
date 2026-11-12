@@ -74,6 +74,7 @@ export function DetalleOferta({
 }: DetalleOfertaProps): JSX.Element {
   const [detalle, setDetalle] = useState<Detalle | null>(null)
   const [error, setError] = useState('')
+  const [errorAdjunto, setErrorAdjunto] = useState('')
   // Reasignación (RN-18 / RF-30)
   const [reasignando, setReasignando] = useState<number | null>(null) // tramoId
   const [candidatos, setCandidatos] = useState<UsuarioAdmin[]>([])
@@ -422,6 +423,7 @@ export function DetalleOferta({
       {/* Adjuntos (RF-10) */}
       <section>
         <h3 className="mb-2 text-lg font-medium">Información compartida</h3>
+        {errorAdjunto && <p className="mb-2 text-sm text-destructive">{errorAdjunto}</p>}
         {detalle.adjuntos.length === 0 ? (
           <p className="text-sm text-muted-foreground">No hay adjuntos en esta oferta.</p>
         ) : (
@@ -429,7 +431,19 @@ export function DetalleOferta({
             {detalle.adjuntos.map((a) => (
               <li key={a.id} className="flex items-center gap-2">
                 <span aria-hidden>📎</span>
-                <span className="font-medium">{a.nombre}</span>
+                <button
+                  type="button"
+                  title="Abrir / descargar"
+                  className="font-medium text-primary underline-offset-2 hover:underline"
+                  onClick={() => {
+                    setErrorAdjunto('')
+                    window.api
+                      .abrirAdjunto(a.id)
+                      .catch((e) => setErrorAdjunto(e instanceof Error ? e.message : String(e)))
+                  }}
+                >
+                  {a.nombre}
+                </button>
                 <span className="text-xs text-muted-foreground">
                   {a.tipo ?? 'documento'} · tramo {a.numeroTramo} · {a.subidoPorNombre ?? '—'}
                 </span>

@@ -29,6 +29,7 @@ import type {
   TramoAsignado,
   UsuarioAdmin
 } from '@shared/ipc'
+import { capturarPestana, comprimirImagen } from '@renderer/lib/imagen'
 
 const BASE = (import.meta.env.VITE_API_BASE ?? '') + '/api'
 const TOKEN_KEY = 'gestor.token'
@@ -106,6 +107,46 @@ async function login(ruta: string, cuerpo: unknown): Promise<ResultadoLogin> {
   return datos
 }
 
+/** Abre el selector de archivos del sistema. Devuelve null si se cancela. */
+function elegirArchivo(accept = ''): Promise<File | null> {
+  return new Promise((resolve) => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    if (accept) input.accept = accept
+    input.onchange = () => resolve(input.files?.[0] ?? null)
+    input.addEventListener('cancel', () => resolve(null))
+    input.click()
+  })
+}
+
+const MAX_ADJUNTO = 25 * 1024 * 1024
+
+interface DestinoSubida {
+  modo: 'supabase' | 'local'
+  url: string
+  ruta: string
+  headers?: Record<string, string>
+}
+
+/** Sube el archivo al destino indicado por la API (Supabase directo, o API en modo local). */
+async function subirArchivo(destino: DestinoSubida, archivo: File): Promise<void> {
+  let res: Response
+  if (destino.modo === 'supabase') {
+    // Misma forma que supabase-js uploadToSignedUrl: multipart con el archivo.
+    const form = new FormData()
+    form.append('cacheControl', '3600')
+    form.append('', archivo)
+    res = await fetch(destino.url, { method: 'PUT', headers: destino.headers, body: form })
+  } else {
+    res = await fetch(BASE + destino.url, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token ?? ''}`, 'Content-Type': 'application/octet-stream' },
+      body: archivo
+    })
+  }
+  if (!res.ok) throw new Error(await mensajeError(res, `No se pudo subir el archivo (${res.status})`))
+}
+
 export const clienteHttp: ApiPuente = {
   iniciarSesion: (credenciales: Credenciales) => login('/auth/login', credenciales),
   verificarCodigo: (email: string, codigo: string) => login('/auth/verificar-codigo', { email, codigo }),
@@ -146,8 +187,36 @@ export const clienteHttp: ApiPuente = {
     req<void>('PATCH', `/subtareas/${subtareaId}`, { completada }),
   eliminarSubtarea: (subtareaId: number) => req<void>('DELETE', `/subtareas/${subtareaId}`),
   obtenerAdjuntosOferta: (ofertaId: number) => req<AdjuntoInfo[]>('GET', `/ofertas/${ofertaId}/adjuntos`),
-  agregarAdjunto: async () => {
-    throw new Error('La carga de adjuntos estará disponible en una próxima actualización (Fase 4).')
+  agregarAdjunto: async (tramoId: number, tipo: string) => {
+    const archivo = await elegirArchivo()
+    if (!archivo) return null
+    if (archivo.size === 0) throw new Error('El archivo está vacío')
+    if (archivo.size > MAX_ADJUNTO) throw new Error('El archivo supera el máximo de 25 MB')
+    const destino = await req<DestinoSubida>('POST', `/tramos/${tramoId}/adjuntos/solicitar`, {
+      nombre: archivo.name,
+      tamano: archivo.size,
+      tipo
+    })
+    await subirArchivo(destino, archivo)
+    return req<AdjuntoInfo[]>('POST', `/tramos/${tramoId}/adjuntos`, { ruta: destino.ruta, nombre: archivo.name, tipo })
+  },
+  abrirAdjunto: async (adjuntoId: number) => {
+    // La pestaña se abre ya (clic del usuario) para que el bloqueador de ventanas no la frene.
+    const ventana = window.open('about:blank', '_blank')
+    try {
+      const enlace = await req<{ modo: 'supabase' | 'local'; url: string }>('GET', `/adjuntos/${adjuntoId}/enlace`)
+      let destino = enlace.url
+      if (enlace.modo === 'local') {
+        const res = await fetch(BASE + enlace.url, { headers: { Authorization: `Bearer ${token ?? ''}` } })
+        if (!res.ok) throw new Error(await mensajeError(res, 'No se pudo descargar el archivo'))
+        destino = URL.createObjectURL(await res.blob())
+      }
+      if (ventana) ventana.location.href = destino
+      else window.location.href = destino
+    } catch (e) {
+      ventana?.close()
+      throw e
+    }
   },
   obtenerPendientesAprobacion: () => req<PendienteAprobacion[]>('GET', '/aprobacion/pendientes'),
   aprobarOferta: (ofertaId: number) => req<void>('POST', `/ofertas/${ofertaId}/aprobar`),
@@ -167,24 +236,11 @@ export const clienteHttp: ApiPuente = {
   marcarNotificacionesLeidas: () => req<void>('POST', '/notificaciones/marcar-leidas'),
   crearReporteSoporte: async (descripcion: string, captura: string | null) =>
     (await req<{ id: number }>('POST', '/soporte', { descripcion, captura })).id,
-  capturarPantalla: () =>
-    Promise.reject(new Error('La captura automática no está disponible en el navegador. Usa «Adjuntar imagen».')),
-  adjuntarImagenSoporte: () =>
-    new Promise<string | null>((resolve, reject) => {
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.accept = 'image/*'
-      input.onchange = () => {
-        const archivo = input.files?.[0]
-        if (!archivo) return resolve(null)
-        if (archivo.size > 3_000_000) return reject(new Error('La imagen supera los 3 MB; usa una más liviana'))
-        const lector = new FileReader()
-        lector.onload = () => resolve(String(lector.result))
-        lector.onerror = () => reject(new Error('No se pudo leer la imagen'))
-        lector.readAsDataURL(archivo)
-      }
-      input.click()
-    }),
+  capturarPantalla: () => capturarPestana(),
+  adjuntarImagenSoporte: async () => {
+    const archivo = await elegirArchivo('image/*')
+    return archivo ? comprimirImagen(archivo) : null
+  },
   listarReportesSoporte: () => req<ReporteSoporte[]>('GET', '/soporte'),
   listarMisReportesSoporte: () => req<ReporteSoporte[]>('GET', '/soporte/mis-reportes'),
   responderReporteSoporte: (reporteId: number, respuesta: string) =>

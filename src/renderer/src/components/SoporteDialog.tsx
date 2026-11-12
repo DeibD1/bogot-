@@ -4,6 +4,7 @@ import type { ReporteSoporte } from '@shared/ipc'
 import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { Label } from './ui/label'
+import { comprimirImagen } from '../lib/imagen'
 import { cn } from '../lib/utils'
 
 /** Botón de soporte técnico (cabecera) + diálogo de reporte con pantallazo. */
@@ -39,7 +40,7 @@ export function SoporteDialog(): JSX.Element {
     await new Promise((r) => setTimeout(r, 250))
     try {
       const imagen = await window.api.capturarPantalla()
-      setCaptura(imagen)
+      if (imagen) setCaptura(imagen) // null = el usuario canceló el selector
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -52,6 +53,17 @@ export function SoporteDialog(): JSX.Element {
     try {
       const imagen = await window.api.adjuntarImagenSoporte()
       if (imagen) setCaptura(imagen)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  /** Pegar (Ctrl+V) o arrastrar una imagen dentro del diálogo. */
+  async function onImagenExterna(archivo: File | undefined | null): Promise<void> {
+    if (!archivo || !archivo.type.startsWith('image/')) return
+    setError('')
+    try {
+      setCaptura(await comprimirImagen(archivo))
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     }
@@ -89,7 +101,21 @@ export function SoporteDialog(): JSX.Element {
 
       {abierto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <Card className="w-full max-w-lg p-5">
+          <Card
+            className="w-full max-w-lg p-5"
+            onPaste={(e) => {
+              const img = [...e.clipboardData.files].find((f) => f.type.startsWith('image/'))
+              if (img) {
+                e.preventDefault()
+                void onImagenExterna(img)
+              }
+            }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault()
+              void onImagenExterna(e.dataTransfer.files[0])
+            }}
+          >
             <div className="mb-3 flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-lg font-medium">
                 <LifeBuoy className="h-5 w-5 text-primary" /> Soporte técnico
@@ -134,6 +160,10 @@ export function SoporteDialog(): JSX.Element {
                       </Button>
                     )}
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Al capturar, el navegador te pedirá elegir la pestaña (elige «Esta pestaña»). También puedes
+                    pegar (Ctrl+V) o arrastrar una imagen aquí.
+                  </p>
                   {captura && (
                     <img
                       src={captura}

@@ -57,6 +57,7 @@ export function VistaProfesional({
   // Confirmación previa al completar (evita clics por error).
   const [confirmacion, setConfirmacion] = useState<{ tarea: TareaItem; tramo: TramoAsignado } | null>(null)
   const [error, setError] = useState('')
+  const [aviso, setAviso] = useState('')
   const [ocupado, setOcupado] = useState(false)
 
   const cargar = useCallback(async () => {
@@ -113,13 +114,26 @@ export function VistaProfesional({
     }
   }
 
+  async function onAbrirAdjunto(adjuntoId: number): Promise<void> {
+    setError('')
+    try {
+      await window.api.abrirAdjunto(adjuntoId)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }
+
   async function onAdjuntar(tramo: TramoAsignado): Promise<void> {
     setOcupado(true)
     setError('')
+    setAviso('')
     try {
       const tipo = TIPO_ADJUNTO_POR_TRAMO[tramo.numero] ?? 'documento'
       const lista = await window.api.agregarAdjunto(tramo.tramoId, tipo)
-      if (lista) setAdjuntos((prev) => ({ ...prev, [tramo.ofertaId]: lista }))
+      if (lista) {
+        setAdjuntos((prev) => ({ ...prev, [tramo.ofertaId]: lista }))
+        setAviso('Archivo adjuntado correctamente.')
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -219,6 +233,12 @@ export function VistaProfesional({
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
+        </div>
+      )}
+
+      {aviso && (
+        <div className="rounded-md border border-estado-atiempo/40 bg-estado-atiempo/10 px-3 py-2 text-sm text-estado-atiempo">
+          {aviso}
         </div>
       )}
 
@@ -387,7 +407,7 @@ export function VistaProfesional({
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-sm font-medium">Información compartida</span>
                   <Button variant="outline" size="sm" disabled={ocupado} onClick={() => onAdjuntar(t)}>
-                    Adjuntar archivo
+                    {ocupado ? 'Procesando…' : 'Adjuntar archivo'}
                   </Button>
                 </div>
                 {(adjuntos[t.ofertaId] ?? []).length === 0 ? (
@@ -397,7 +417,14 @@ export function VistaProfesional({
                     {(adjuntos[t.ofertaId] ?? []).map((a) => (
                       <li key={a.id} className="flex items-center gap-2 text-muted-foreground">
                         <span aria-hidden>📎</span>
-                        <span className="font-medium text-foreground">{a.nombre}</span>
+                        <button
+                          type="button"
+                          title="Abrir / descargar"
+                          className="font-medium text-primary underline-offset-2 hover:underline"
+                          onClick={() => onAbrirAdjunto(a.id)}
+                        >
+                          {a.nombre}
+                        </button>
                         <span className="text-xs">
                           {a.tipo ?? 'documento'} · tramo {a.numeroTramo} · {a.subidoPorNombre ?? '—'}
                         </span>

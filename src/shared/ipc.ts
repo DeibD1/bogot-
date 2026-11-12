@@ -7,7 +7,7 @@ import type {
   Tamano,
   TipoNotificacion,
   TipoTarea
-} from './dominio.js'
+} from './dominio'
 
 export const CANALES = {
   login: 'auth:login',
@@ -442,7 +442,10 @@ export interface ApiPuente {
   marcarSubtarea: (subtareaId: number, completada: boolean) => Promise<void>
   eliminarSubtarea: (subtareaId: number) => Promise<void>
   obtenerAdjuntosOferta: (ofertaId: number) => Promise<AdjuntoInfo[]>
+  /** Abre el selector de archivos, lo sube y devuelve la lista actualizada (null si se cancela). */
   agregarAdjunto: (tramoId: number, tipo: string) => Promise<AdjuntoInfo[] | null>
+  /** Abre/descarga un adjunto en una pestaña nueva (con URL firmada de corta vida). */
+  abrirAdjunto: (adjuntoId: number) => Promise<void>
   obtenerPendientesAprobacion: () => Promise<PendienteAprobacion[]>
   aprobarOferta: (ofertaId: number) => Promise<void>
   rechazarOferta: (ofertaId: number, motivos: MotivoRechazoInput[]) => Promise<void>
@@ -456,7 +459,8 @@ export interface ApiPuente {
   contarNotificacionesNoLeidas: () => Promise<number>
   marcarNotificacionesLeidas: () => Promise<void>
   crearReporteSoporte: (descripcion: string, captura: string | null) => Promise<number>
-  capturarPantalla: () => Promise<string>
+  /** Captura la pestaña actual (navegador). null si el usuario cancela. */
+  capturarPantalla: () => Promise<string | null>
   adjuntarImagenSoporte: () => Promise<string | null>
   listarReportesSoporte: () => Promise<ReporteSoporte[]>
   listarMisReportesSoporte: () => Promise<ReporteSoporte[]>

@@ -1,7 +1,7 @@
 // Configuración del servidor web. Se lee del entorno (.env) y, para SMTP/soporte,
 // se reutiliza database.config.json a través de leerConfigApp.
 import 'dotenv/config'
-import { leerConfigApp, resolveDbDestino } from '../main/db/path.js'
+import { leerConfigApp, resolveDbDestino } from '../main/db/path'
 
 /** Puerto de escucha (por defecto 3000). */
 export const PUERTO = Number(process.env.PORT ?? 3000)
@@ -39,6 +39,10 @@ export const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?
  * está definido (desarrollo local), se usa nuestro JWT propio (JWT_SECRET).
  */
 export const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET ?? ''
+/** Clave pública (anon) de Supabase: el navegador la envía como `apikey` al subir con URL firmada. */
+export const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY ?? ''
+/** Carpeta local de adjuntos (solo servidor propio / desarrollo; Vercel no tiene disco persistente). */
+export const CARPETA_ADJUNTOS = process.env.CARPETA_ADJUNTOS ?? './data/adjuntos'
 /** Bucket de Supabase Storage para los adjuntos (Fase 4). */
 export const SUPABASE_BUCKET_ADJUNTOS = process.env.SUPABASE_BUCKET_ADJUNTOS ?? 'adjuntos'
 

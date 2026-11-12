@@ -2,19 +2,25 @@
 // existentes (los mismos que usaba el proceso principal de Electron), pero
 // tomando la identidad del usuario desde el JWT (sesionDe) en lugar de una
 // sesión global. Todas pasan por middlewareAuth (montado en index.ts).
-import { Router, type Request } from 'express'
+import express, { Router, type Request } from 'express'
 import { eq } from 'drizzle-orm'
-import { soporte as soporteTabla, usuario } from '../main/db/schema.js'
-import { listarAdjuntosOferta } from '../main/services/adjuntos.js'
+import { soporte as soporteTabla, usuario } from '../main/db/schema'
+import {
+  datosTramo,
+  listarAdjuntosOferta,
+  obtenerAdjunto,
+  registrarAdjunto
+} from '../main/services/adjuntos'
 import {
   aprobarOferta,
   entregarCorreccion,
   listarCorrecciones,
   listarPendientesAprobacion,
   rechazarOferta
-} from '../main/services/aprobacion.js'
-import { cargarFestivos } from '../main/services/calendario.js'
+} from '../main/services/aprobacion'
+import { cargarFestivos } from '../main/services/calendario'
 import {
+  idsOfertasVisibles,
   obtenerAgenda,
   obtenerCalendarioUnidad,
   obtenerDetalleOferta,
@@ -22,42 +28,57 @@ import {
   obtenerLineaTiempo,
   obtenerMisTramos,
   obtenerResumenOfertas
-} from '../main/services/consultas.js'
-import { cargarDatosDemostracion } from '../main/services/demo.js'
-import { deshacerAprobacion, deshacerCompletarTarea } from '../main/services/deshacer.js'
-import { hoyLocalISO } from '../main/services/fechas.js'
-import { obtenerIndicadores } from '../main/services/indicadores-consultas.js'
+} from '../main/services/consultas'
+import { cargarDatosDemostracion } from '../main/services/demo'
+import { deshacerAprobacion, deshacerCompletarTarea } from '../main/services/deshacer'
+import { hoyLocalISO } from '../main/services/fechas'
+import { obtenerIndicadores } from '../main/services/indicadores-consultas'
 import {
   contarNoLeidas,
   generarAlertasVencimiento,
   listarNotificaciones,
   marcarTodasLeidas
-} from '../main/services/notificaciones.js'
-import { crearOferta } from '../main/services/ofertas.js'
-import { reasignarTramo } from '../main/services/reasignacion.js'
+} from '../main/services/notificaciones'
+import { crearOferta } from '../main/services/ofertas'
+import { reasignarTramo } from '../main/services/reasignacion'
 import {
   crearReporteSoporte,
   listarMisReportes,
   listarReportesSoporte,
   marcarReporteAtendido,
   responderReporteSoporte
-} from '../main/services/soporte.js'
-import { crearSubtarea, eliminarSubtarea, marcarSubtarea } from '../main/services/subtareas.js'
-import { completarTarea } from '../main/services/tareas.js'
-import { actualizarUsuario, crearUsuario, listarUsuarios } from '../main/services/usuarios.js'
-import { ROLES, type Rol } from '../shared/dominio.js'
-import { puedeCrearOfertas } from '../shared/permisos.js'
+} from '../main/services/soporte'
+import { crearSubtarea, eliminarSubtarea, marcarSubtarea } from '../main/services/subtareas'
+import { completarTarea } from '../main/services/tareas'
+import { actualizarUsuario, crearUsuario, listarUsuarios } from '../main/services/usuarios'
+import { ROLES, type Rol } from '../shared/dominio'
+import { puedeCrearOfertas } from '../shared/permisos'
 import type {
+  SesionUsuario,
   ActualizarUsuarioInput,
   CandidatosPorRol,
   FiltroIndicadores,
   MotivoRechazoInput,
   NuevaOfertaInput,
   NuevoUsuarioInput
-} from '../shared/ipc.js'
-import { sesionDe } from './auth.js'
-import { type Contexto } from './contexto.js'
-import { asyncHandler, datosInvalidos, prohibido } from './errors.js'
+} from '../shared/ipc'
+import {
+  construirRuta,
+  MAX_ADJUNTO_BYTES,
+  nombreSeguro,
+  rutaValidaParaTramo
+} from './archivos'
+import {
+  existeArchivo,
+  guardarLocal,
+  modoAlmacenamiento,
+  prepararSubida,
+  rutaLocal,
+  urlDescarga
+} from './almacenamiento'
+import { sesionDe } from './auth'
+import { type Contexto } from './contexto'
+import { asyncHandler, datosInvalidos, noEncontrado, prohibido } from './errors'
 
 /** Entero de query con valor por defecto y recorte a [min, max]. */
 function entero(valor: unknown, porDefecto: number, min: number, max: number): number {
@@ -210,20 +231,110 @@ export function crearRutasApi(ctx: Contexto): Router {
   )
 
   // --- Adjuntos (RF-10) -----------------------------------------------------
+  /** Solo participantes de la oferta (o vista global de lectura) acceden a sus archivos (RNF-06). */
+  const exigirVisibilidad = async (ofertaId: number, sesion: SesionUsuario): Promise<void> => {
+    const visibles = await idsOfertasVisibles(ctx.conexion.db, sesion)
+    if (visibles !== 'todas' && !visibles.includes(ofertaId)) throw prohibido('No tienes acceso a esta oferta')
+  }
+
   router.get(
     '/ofertas/:id/adjuntos',
     asyncHandler(async (req, res) => {
-      sesionDe(req)
-      res.json(await listarAdjuntosOferta(ctx.conexion.db, idDe(req)))
+      const ofertaId = idDe(req)
+      await exigirVisibilidad(ofertaId, sesionDe(req))
+      res.json(await listarAdjuntosOferta(ctx.conexion.db, ofertaId))
     })
   )
 
-  // La carga de archivos (multipart -> carpeta del servidor) se implementa en
-  // la Fase 4. Se deja el endpoint declarado devolviendo 501 para dejarlo
-  // explícito en el contrato.
-  router.post('/tramos/:id/adjuntos', (_req, res) => {
-    res.status(501).json({ error: 'Carga de adjuntos pendiente (Fase 4 del plan de migración)' })
-  })
+  /** Paso 1: el responsable pide dónde subir el archivo (valida permiso, nombre y tamaño). */
+  router.post(
+    '/tramos/:id/adjuntos/solicitar',
+    asyncHandler(async (req, res) => {
+      const sesion = sesionDe(req)
+      const tramoId = idDe(req)
+      const { nombre, tamano } = (req.body ?? {}) as { nombre?: string; tamano?: number }
+      const t = await datosTramo(ctx.conexion.db, tramoId)
+      if (!t) throw noEncontrado('El tramo no existe')
+      if (t.responsableId !== sesion.id) throw prohibido('Solo el responsable del tramo puede adjuntar archivos')
+      if (!nombre?.trim()) throw datosInvalidos('El archivo no tiene nombre')
+      if (!Number.isFinite(tamano) || (tamano ?? 0) <= 0) throw datosInvalidos('El archivo está vacío')
+      if ((tamano ?? 0) > MAX_ADJUNTO_BYTES) {
+        throw datosInvalidos(`El archivo supera el máximo de ${MAX_ADJUNTO_BYTES / 1024 / 1024} MB`)
+      }
+      const ruta = construirRuta(t.ofertaId, tramoId, nombre)
+      const destino = await prepararSubida(ruta, `/tramos/${tramoId}/adjuntos/local?ruta=${encodeURIComponent(ruta)}`)
+      res.json({ ...destino, ruta })
+    })
+  )
+
+  /** Paso 2 (solo modo local): el archivo pasa por la API y se guarda en disco. */
+  router.put(
+    '/tramos/:id/adjuntos/local',
+    express.raw({ type: () => true, limit: MAX_ADJUNTO_BYTES }),
+    asyncHandler(async (req, res) => {
+      if (modoAlmacenamiento() !== 'local') throw datosInvalidos('Subida local no habilitada')
+      const sesion = sesionDe(req)
+      const tramoId = idDe(req)
+      const t = await datosTramo(ctx.conexion.db, tramoId)
+      if (!t) throw noEncontrado('El tramo no existe')
+      if (t.responsableId !== sesion.id) throw prohibido('Solo el responsable del tramo puede adjuntar archivos')
+      const ruta = String(req.query.ruta ?? '')
+      if (!rutaValidaParaTramo(ruta, t.ofertaId, tramoId)) throw datosInvalidos('Ruta de archivo inválida')
+      if (!Buffer.isBuffer(req.body) || req.body.length === 0) throw datosInvalidos('El archivo está vacío')
+      await guardarLocal(ruta, req.body)
+      res.status(204).end()
+    })
+  )
+
+  /** Paso 3: confirmar la subida → se verifica que el objeto exista y se registra en la BD. */
+  router.post(
+    '/tramos/:id/adjuntos',
+    asyncHandler(async (req, res) => {
+      const { db } = ctx.conexion
+      const sesion = sesionDe(req)
+      const tramoId = idDe(req)
+      const { ruta, nombre, tipo } = (req.body ?? {}) as { ruta?: string; nombre?: string; tipo?: string }
+      const t = await datosTramo(db, tramoId)
+      if (!t) throw noEncontrado('El tramo no existe')
+      if (!ruta || !rutaValidaParaTramo(ruta, t.ofertaId, tramoId)) throw datosInvalidos('Ruta de archivo inválida')
+      if (!(await existeArchivo(ruta))) throw datosInvalidos('El archivo no llegó al almacenamiento. Intenta de nuevo.')
+      await registrarAdjunto(db, {
+        tramoId,
+        tipo: (tipo ?? 'documento').slice(0, 50),
+        nombre: (nombre?.trim() || nombreSeguro(ruta)).slice(0, 255),
+        ruta,
+        subidoPor: sesion.id // registrarAdjunto vuelve a exigir que sea el responsable
+      })
+      res.status(201).json(await listarAdjuntosOferta(db, t.ofertaId))
+    })
+  )
+
+  /** Enlace de descarga: URL firmada (Supabase) o endpoint autenticado de la API (local). */
+  router.get(
+    '/adjuntos/:id/enlace',
+    asyncHandler(async (req, res) => {
+      const id = idDe(req)
+      const a = await obtenerAdjunto(ctx.conexion.db, id)
+      if (!a?.ruta) throw noEncontrado('El adjunto no existe o no tiene archivo')
+      await exigirVisibilidad(a.ofertaId, sesionDe(req))
+      if (modoAlmacenamiento() === 'supabase') {
+        res.json({ modo: 'supabase', url: await urlDescarga(a.ruta) })
+      } else {
+        res.json({ modo: 'local', url: `/adjuntos/${id}/archivo` })
+      }
+    })
+  )
+
+  router.get(
+    '/adjuntos/:id/archivo',
+    asyncHandler(async (req, res) => {
+      if (modoAlmacenamiento() !== 'local') throw noEncontrado()
+      const a = await obtenerAdjunto(ctx.conexion.db, idDe(req))
+      if (!a?.ruta) throw noEncontrado('El adjunto no existe o no tiene archivo')
+      await exigirVisibilidad(a.ofertaId, sesionDe(req))
+      res.download(rutaLocal(a.ruta), a.nombre)
+    })
+  )
 
   // --- Aprobación final -----------------------------------------------------
   router.get(
